@@ -5,6 +5,10 @@ function [x1 x2 y1 y2] = getWindow(image, xwindow, ywindow)
 %                   at the location of the window, but asks the user to confirm.
 %   Inputs:
 %         image = a uint8 greyscale image matrix
+%         xwindow = The width of the window in pixels (int)
+%         ywindow = The height of the window in pixels (int)
+%
+%   Outputs:
 %         x1 = The lower x boundary of the image
 %         x2 = The upper x boundary of the image
 %         y1 = The lower y boundary of the image

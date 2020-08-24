@@ -1,5 +1,5 @@
 function rss = rssMirror(func)
-%RSS Compute the mean square error between a function mirrored around each
+%RSSMIRROR Compute the mean square error between a function mirrored around each
 %     point in the function.
 %   Outputs:
 %         rss = returns an array of the residual square values for the function 

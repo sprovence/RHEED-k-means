@@ -30,15 +30,24 @@ for i=1:max_iters
     % For each example in X, assign it to the closest centroid
     idx = findClosestCentroids(X, centroids);
     
+    % Assign the old centroids to a variable to check is the centroid membership
+    % is changing over time.
+    previous_centroids = centroids;
+    
     % Given the memberships, compute new centroids
     centroids = computeCentroids(X, idx, K);
+    
+    if previous_centroids == centroids
+      break;
+    end
+    
 end
 
 % Calculate the cost of this KMeans run.
 cost = 0;
-for i=1:m
+for i=1:n
   cost = cost + (norm( X(i,:) - centroids(idx(i),:) ))^2;
 endfor
-cost = cost/m;
+cost = cost/n;
 
 endfunction

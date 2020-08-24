@@ -9,6 +9,11 @@ function centroids = computeCentroids(X, idx, K)
 %   centroids, where each column of centroids is the mean of the data points
 %   assigned to it.
 %
+%    Inputs:
+%           X = Input dataset matrix
+%           idx = Vector input of centroid assignments (int)
+%           K = The number of centroids
+%
 
 % Initialize values
 [n, m] = size(X);   % n is the number of training examples/images

@@ -1,38 +1,35 @@
-% processVideo.m
-% Process a video into a series of bitmap images
-% Script for batch processing bitmap images of RHEED screen
+function [fpath,vname,fps] = processVideo(XWindowSize=250, YWindowSize=160, 
+  cropImageAtTime=10)
+% PROCESSVIDEO
+% Process a video into a series of bitmap images, saved in the same directory
+% as the video file.
 
-% Load the images package and clear the workspace
-pkg load image;
-pkg load video;
-clear;
-
-%% ============================ INPUT DATA ==================================%%
-%%%%% Modify the following variables before running this file %%%%%
-
-% Note that the file must be in .avi format
-vname = '041219_1 LCO-LAO Growth';
-directory = ...
-    'C:/Users/sydne/Documents/Auburn Postdoc Comes Lab/RHEED Video/';
-XWindowSize = 300;                         % in pixels (default = 250)
-YWindowSize = 150;                         % in pixels (default = 160)
-cropImageAtTime = 60;                      % in seconds (default = 10)
-
-%% ==========================================================================%%
+% Inputs:
+%   XWindowSize = The horizontal video crop size (pixels) (int, default = 250)
+%   YWindowSize = The vertical video crop size (pixels)   (int, default = 160)
+%   cropImageAtTime = The time used to select a crop area (seconds) 
+%                     (int, default=10)
+%
 
 %% ============================= LOAD VIDEO =============================== %%
 % Load the video
 
-fprintf('\nLoading the video into Octave.\n');
+fprintf('\nSelect a video to process.\n');
+[fname, fpath, fltidx] = uigetfile('*.avi', 'Select a video to process.');
 
-info = aviinfo([directory vname ".avi"]);
+# Get video parameters
+[~, vname, ext] = fileparts([fpath, fname]);
+info = aviinfo([fpath fname]);
 numFrames = info.NumFrames;
+num_digits = numel(num2str(numFrames));
+str_format = ['%0' num2str(num_digits) '.f'];
+fps = info.FramesPerSecond;
 
 % Process the first image to set a window for all subsequent images
 cropImageAtTime = cropImageAtTime*info.FramesPerSecond;  
                      % Multiply seconds by fps to get frame number
 
-image = aviread([directory vname ".avi"], cropImageAtTime);
+image = aviread([fpath fname], cropImageAtTime);
 bwimage = rgb2gray(image);
 
 % Get the boundaries of the image to crop. Ignore the last 20 pixels as that is
@@ -47,22 +44,27 @@ img = bwimage(y1:y2,x1:x2);
 
 % Make a new directory for the processed images named after the filename and 
 % save the image to the directory
-mkdir(directory, vname);
-imwrite(img, [directory vname "/" vname "_1.bmp"]);
+mkdir(fpath, vname);
 
 % Repeat the process for the other frames.  
-for i = 2:numFrames
-  % Read in the frame from the video
-  image = aviread([directory vname ".avi"], i);
-  % Convert the image to greyscale
-  bwimage = rgb2gray(image);
-  % Crop the image based on the parameters determined from the first frame.
-  img = bwimage(y1:y2,x1:x2);
-  % Save the image to file as a bitmap
-  imwrite(img, [directory vname "/" vname "_" num2str(i) ".bmp"]);
-  if mod(i,round(numFrames/100)) == 0
-    fprintf("Processed %d%% of the video. \n", round(100*i/numFrames)); 
-  endif
+for i = 1:numFrames
+  try
+    % Read in the frame from the video
+    image = aviread([fpath fname], i);
+    % Convert the image to greyscale
+    bwimage = rgb2gray(image);
+    % Crop the image based on the parameters determined from the first frame.
+    img = bwimage(y1:y2,x1:x2);
+    % Save the image to file as a bitmap
+    imwrite(img, [fpath,vname,'/',vname,'_',num2str(i,str_format),'.bmp']);
+    if mod(i,round(numFrames/100)) == 0
+     fprintf('Processed %d%% of the video. \n', round(100*i/numFrames)); 
+    endif
+  catch
+    fprintf('Unable to read frame %d.\n',i);
+    return;
+  end_try_catch
 end 
 toc;
-fprintf("Video conversion complete. \n");
+fprintf('Video conversion complete. \n');
+endfunction
