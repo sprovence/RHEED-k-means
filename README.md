@@ -1,5 +1,7 @@
 # RHEED-k-means
-A series of Matlab/Octave scripts to process .avi videos of RHEED, run PCA and k-means clustering analysis on the image frame time series, and plot and analyze the resulting information.
+An Octave script to process .avi videos of RHEED, run PCA and k-means clustering analysis on the image frame time series, and plot and analyze the resulting information, as described in the paper "Machine learning analysis of perovskite oxides grown by molecular beam epitaxy", Sydney R. Provence, Suresh Thapa, Rajendra Paudel, Tristan K. Truttmann, Abhinav Prakash, Bharat Jalan, and Ryan B. Comes, Phys. Rev. Materials 4, 083807 – Published 21 August 2020.
+
+Please note that the full analysis can be performed by running the main.m script in the repo, although individual stages of analysis can be performed through running the individual functions. SVD can be rather slow, so it is recommended to limit the crop size to as small as possible, and eliminate any unnecessary frames in the video that are not useful to analysis.
 
 ## Running k-means on a RHEED video
 Updated 4/16/19
